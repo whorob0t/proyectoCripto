@@ -39,8 +39,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="keyPublic" pref="141" max="32767" attributes="0"/>
-                          <Component id="key" max="32767" attributes="0"/>
+                          <Component id="qtxt" pref="141" max="32767" attributes="0"/>
+                          <Component id="ptxt" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="218" max="-2" attributes="0"/>
                       <Component id="jButton2" min="-2" max="-2" attributes="0"/>
@@ -57,13 +57,13 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="key" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="ptxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="keyPublic" min="-2" max="-2" attributes="0"/>
+                          <Component id="qtxt" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="jButton2" min="-2" pref="59" max="-2" attributes="0"/>
@@ -83,17 +83,17 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Llave Priv"/>
+        <Property name="text" type="java.lang.String" value="p"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Llave Pub"/>
+        <Property name="text" type="java.lang.String" value="q"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="keyPublic">
+    <Component class="javax.swing.JTextField" name="qtxt">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="keyPublicActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="qtxtActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton2">
@@ -135,9 +135,9 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JTextField" name="key">
+    <Component class="javax.swing.JTextField" name="ptxt">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="keyActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ptxtActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

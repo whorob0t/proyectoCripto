@@ -5,11 +5,7 @@
  */
 package proyectocripto;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.math.BigInteger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,23 +32,23 @@ public class VentanaChat extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        keyPublic = new javax.swing.JTextField();
+        qtxt = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         TXTmsgEnviar = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        key = new javax.swing.JTextField();
+        ptxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Llave Priv");
+        jLabel1.setText("p");
 
-        jLabel3.setText("Llave Pub");
+        jLabel3.setText("q");
 
-        keyPublic.addActionListener(new java.awt.event.ActionListener() {
+        qtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                keyPublicActionPerformed(evt);
+                qtxtActionPerformed(evt);
             }
         });
 
@@ -80,9 +76,9 @@ public class VentanaChat extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        key.addActionListener(new java.awt.event.ActionListener() {
+        ptxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                keyActionPerformed(evt);
+                ptxtActionPerformed(evt);
             }
         });
 
@@ -104,8 +100,8 @@ public class VentanaChat extends javax.swing.JFrame {
                             .addComponent(jLabel1))
                         .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(keyPublic, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-                            .addComponent(key))
+                            .addComponent(qtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                            .addComponent(ptxt))
                         .addGap(218, 218, 218)
                         .addComponent(jButton2)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -117,12 +113,12 @@ public class VentanaChat extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ptxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addGap(8, 8, 8)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(keyPublic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(qtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
@@ -136,32 +132,25 @@ public class VentanaChat extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void keyPublicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyPublicActionPerformed
+    private void qtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_keyPublicActionPerformed
+    }//GEN-LAST:event_qtxtActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Chat.initServer();
 
-        BigInteger publicKey = new BigInteger( this.keyPublic.getText() );
-        BigInteger privateKey = new BigInteger( this.key.getText() );
-        rsa = new RSA(publicKey, privateKey, 10);
-        Chat.servidor.LLaves(publicKey, privateKey, rsa.getN());
+        //BigInteger p = new BigInteger( this.ptxt.getText() );
+        //BigInteger q = new BigInteger( this.qtxt.getText() );
         
         
-        System.out.println("\n" + "P: " + rsa.getP());
-        System.out.println("Q: " + rsa.getQ());
-        System.out.println("n (p*q): " + rsa.getN());
-        System.out.println("φ de Euler para N: " + rsa.getTotient());
-        System.out.println("e: " + rsa.getE());
-        System.out.println("d: " + rsa.getD());
-        
-        System.out.println("\n" + "Funcion de cifrado: " + rsa.getE()+", "+rsa.getN());
-        System.out.println("Funcion de desifrado: " + rsa.getD()+", "+rsa.getN());
+        BigInteger p = new BigInteger("17");
+        BigInteger q = new BigInteger("11");
+        Chat.servidor.LLaves(p, q);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Chat.servidor.enviarMSG(this.TXTmsgEnviar.getText());
+        String msg = this.TXTmsgEnviar.getText();
+        Chat.servidor.enviarMSG(msg);
         jTextArea1.append("\n"+"Servidor-"+this.TXTmsgEnviar.getText());
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -169,9 +158,9 @@ public class VentanaChat extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TXTmsgEnviarActionPerformed
 
-    private void keyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyActionPerformed
+    private void ptxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ptxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_keyActionPerformed
+    }//GEN-LAST:event_ptxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -217,7 +206,7 @@ public class VentanaChat extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField key;
-    private javax.swing.JTextField keyPublic;
+    private javax.swing.JTextField ptxt;
+    private javax.swing.JTextField qtxt;
     // End of variables declaration//GEN-END:variables
 }

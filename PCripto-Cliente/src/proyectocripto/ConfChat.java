@@ -19,18 +19,30 @@ public class ConfChat extends Thread {
     private BufferedReader entrada;
     final int puerto = 8080; //Puerto que se usara para conectarse al servidor (debe ser el mimso puerto configurado en el servidor)
     public RSA rsa;//Creamos el objeto de RSA con lo metodo de RSA
-    BigInteger publicKey ;//Nustra llave publica
-    BigInteger privateKey;//Nuestra lave privad
-    BigInteger modulus ;//Modulo
     
 
-    public ConfChat(String ip,String pl, String pr, String m){
+    public ConfChat(String ip,BigInteger pp, BigInteger qq){
         try{
-            rsa = new RSA(publicKey, privateKey, 10);
+            rsa = new RSA(pp, qq);
             //EL socket permite la comunicacion entre los programas
             this.s = new Socket(ip,this.puerto); //Se asigna la ip"dada por el usuario" y el puerto "Default" al socket             
             this.entradaSocket = new InputStreamReader(s.getInputStream());
-            this.entrada = new BufferedReader(entradaSocket);              
+            this.entrada = new BufferedReader(entradaSocket);  
+            //System.out.println("\n" + "IP Valida: " + this.IPservidor.getText());
+            //System.out.println("\n" + "P: " + rsa.getP());
+            //System.out.println("Q: " + rsa.getQ());
+            System.out.println("n (p*q): " + rsa.getN());
+            //System.out.println("φ de Euler para N: " + rsa.getFi());
+            System.out.println("e: " + rsa.getE());
+            System.out.println("d: " + rsa.getD());
+
+            System.out.println("\n" + "Funcion de cifrado: " + rsa.getE()+", "+rsa.getN());
+            System.out.println("Funcion de desifrado: " + rsa.getD()+", "+rsa.getN());      
+            
+            String e = rsa.getE().toString();
+            String n = rsa.getN().toString();
+            String llavePub = "PK" + e.length() + ""  + n.length() + ""  + e + "" + n;
+            enviarLlave(llavePub);
         }catch (Exception e){};
     }
 
@@ -39,30 +51,25 @@ public class ConfChat extends Thread {
         while(true){
             try{
                 texto = entrada.readLine();//Resive el mensaje cifrado del servidor              
-                String pkey = texto.trim();                 
-                System.out.println(texto);
-                //Leer el mensjae de entrada
                 
+                String pkey = texto.trim();                   
                 for(int i=0; i<pkey.length();i++){
-                    char char1 = pkey.charAt(1);
-                    char char2 = pkey.charAt(2);
+                    char char1 = pkey.charAt(0);
+                    char char2 = pkey.charAt(1);
                     if(char1 == 'P' && char2 == 'K'){
                         int pklen = pkey.length();
                         String substring = pkey.substring(4, pklen);
-                        System.out.println("llava Publica del cliente: " + substring);
+                        System.out.println("llave Publica del cliente: " + substring);
                     }else{
                         break;
                     }
                 }
                 
-                if(texto != "" || texto != null){
-             
-                    // (11234) ( 1234 ) (\n) = ( ) 
-                 
-                    String mensajeD;//Desencriptamos el mensaje   
-                    
+                if(texto != "" || texto != null){                  
+                    String mensajeDecrypt;//Desencriptamos el mensaje  
                     String letra = "";
-                    byte[] digitosDecrypt = Base64.getDecoder().decode(texto);
+                    
+                    byte[] digitosDecrypt = Base64.getDecoder().decode(texto.trim());
                     String decrypt = new String(digitosDecrypt);            
                     System.out.println("Texto desencriptado: " + decrypt);
 
@@ -77,8 +84,8 @@ public class ConfChat extends Thread {
                     
                     try{
                         //Excepcion para cuando se reciba un espacio en blanco  el progrma no se dentega
-                        mensajeD=rsa.desencripta(textoCifrado);//Desencriptamos el mensaje lamando a una clase del objeto rsa
-                        VentanaChat.jTextArea1.append("\n"+"Servidor: "+ mensajeD); //Imprime el mensaje desencriptado en la pantalla
+                        mensajeDecrypt=rsa.desencripta(textoCifrado);//Desencriptamos el mensaje lamando a una clase del objeto rsa
+                        VentanaChat.jTextArea1.append("\n"+"Servidor: "+ mensajeDecrypt); //Imprime el mensaje desencriptado en la pantalla
                     }
                     catch(Exception e){
                         System.out.println("Error de conversion");
@@ -94,7 +101,7 @@ public class ConfChat extends Thread {
         System.out.println("Enviado");
         try{
             System.out.println( "Mensaje trado de enviar por el cliente: "+msg);
-            String encryptedMessage = rsa.encripta(msg);//Encriptar el mensaje
+            String encryptedMessage = rsa.encripta(msg);
             System.out.println("Mensaje encriptado: " + encryptedMessage);           
             //Se trnaforma el mensaje encriptado a string para el envio del mensaje
             //String mensajeE=String.valueOf(encryptedMessage);//Convertir dato de tipo BigInteger a String
@@ -106,6 +113,18 @@ public class ConfChat extends Thread {
             System.out.println("Problema al enviar mensaje :c");
         };
     }
+    public void enviarLlave(String llavePub){
+        
+        System.out.println("Enviando llave publica");
+        try{
+            this.salida = new DataOutputStream(s.getOutputStream());//Crera flujo de salid            
+            this.salida.writeUTF(llavePub+"\n");//Enviamos mensaje
+        }
+        catch (IOException e){
+            System.out.println("Problema al enviar llave publica :c");
+        };
+    }
+    
     
     public String leerMSG(){
         try{

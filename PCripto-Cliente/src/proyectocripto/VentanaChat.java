@@ -1,6 +1,4 @@
-
 package proyectocripto;
-
 import java.math.BigInteger;
 import javax.swing.JOptionPane;
 import java.awt.datatransfer.*; 
@@ -12,7 +10,10 @@ import java.awt.Toolkit;
  */
 public class VentanaChat extends javax.swing.JFrame {
 
-    private RSA rsa;
+    private BigInteger p;
+    private BigInteger q;
+    private String ipServ = "127.0.0.1";
+    
     public VentanaChat() {
         initComponents();
     }
@@ -27,13 +28,12 @@ public class VentanaChat extends javax.swing.JFrame {
         jFrame2 = new javax.swing.JFrame();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        ok = new javax.swing.JButton();
         TXTenviarMSG = new javax.swing.JTextField();
         IPservidor = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        key = new javax.swing.JTextField();
-        keyPublic = new javax.swing.JTextField();
+        ptxt = new javax.swing.JTextField();
+        qtxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -82,13 +82,6 @@ public class VentanaChat extends javax.swing.JFrame {
             }
         });
 
-        ok.setText("OK");
-        ok.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okActionPerformed(evt);
-            }
-        });
-
         IPservidor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IPservidorActionPerformed(evt);
@@ -99,21 +92,21 @@ public class VentanaChat extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        key.addActionListener(new java.awt.event.ActionListener() {
+        ptxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                keyActionPerformed(evt);
+                ptxtActionPerformed(evt);
             }
         });
 
-        keyPublic.addActionListener(new java.awt.event.ActionListener() {
+        qtxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                keyPublicActionPerformed(evt);
+                qtxtActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Llave Priv");
+        jLabel1.setText("p");
 
-        jLabel2.setText("LLave Pub");
+        jLabel2.setText("q");
 
         jLabel4.setText("IP Serv");
 
@@ -134,18 +127,17 @@ public class VentanaChat extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ptxt, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(IPservidor, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(33, 33, 33)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(9, 9, 9)
-                                .addComponent(keyPublic, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(qtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(TXTenviarMSG)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -157,16 +149,15 @@ public class VentanaChat extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ptxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(IPservidor))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(keyPublic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(qtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -180,28 +171,39 @@ public class VentanaChat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println("Validando IP: " + this.IPservidor.getText());       //Validacion para no recibir campo vacio en la IP 
-        if (IPservidor.getText().equals("")) {                                  // del servidor
-            System.out.print("IP NO VALIDA: "+ this.IPservidor.getText()); 
-            JOptionPane.showMessageDialog(null, "IP NO VALIDA");    //Si esta vacio el campo no envia los datos y muestra pantalla emergente
+        ipServ = this.IPservidor.getText();
+        System.out.println("Validando IP del Servidor: " + ipServ);       //Validacion para no recibir campo vacio en la IP 
+        if (ipServ.equals("")) {                                  // del servidor
+            System.out.println("IP del Servidor NO VALIDA: "+ ipServ); 
+            JOptionPane.showMessageDialog(null, "IP del Servidor NO VALIDA: "+ ipServ);    //Si esta vacio el campo no envia los datos y muestra pantalla emergente
             }
-        else{                                                                 
-        String publicKey1 = this.keyPublic.getText();
-        String privateKey1 = this.key.getText();
-        BigInteger publicKey = new BigInteger(this.keyPublic.getText());
-        BigInteger privateKey = new BigInteger(this.key.getText());
-        rsa =new RSA(publicKey, privateKey, 10);
-        Chat.initCliente(this.IPservidor.getText(), publicKey1, privateKey1, rsa.getN().toString()); //EL campo no esta vacio, envia las variables
-        System.out.println("====================");
-        System.out.println("     CONECTADO      ");
-        System.out.println("====================" + "\n");
+        else{               
+                        
+            //p = new BigInteger(this.ptxt.getText());
+            //q = new BigInteger(this.qtxt.getText());
+
+            p = new BigInteger("17");
+            q = new BigInteger("11");
+
+            try{
+                Chat.initCliente(ipServ, p, q); //EL campo no esta vacio, envia las variables
+                System.out.println("====================");
+                System.out.println("     CONECTADO      ");
+                System.out.println("====================" + "\n");
+            }catch(Exception ex){
+                System.out.println("====================");
+                System.out.println(" ERROR DE CONEXION  ");
+                System.out.println("====================" + "\n");
+            }       
+
         }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         System.out.println("Texto del boton enviar cleinte: ");
         String txtmsg = this.TXTenviarMSG.getText();
-        Chat.cliente.enviarMSG(txtmsg.trim());//Enviar texto capturado
+        Chat.cliente.enviarMSG(txtmsg);//Enviar texto capturado
 
         jTextArea1.append("\n" + "Cliente: " + this.TXTenviarMSG.getText());//MOSTRAMOS EL TEXTO QUE SE ENVIO
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -210,38 +212,13 @@ public class VentanaChat extends javax.swing.JFrame {
         // TODO add your handling code here:      
     }//GEN-LAST:event_IPservidorActionPerformed
 
-    private void keyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyActionPerformed
+    private void ptxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ptxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_keyActionPerformed
+    }//GEN-LAST:event_ptxtActionPerformed
 
-    private void keyPublicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyPublicActionPerformed
+    private void qtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_keyPublicActionPerformed
-
-    private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
-        //System.out.println("\n" + "Ok botton: ");        
-        if (IPservidor.getText().equals("")) {
-            System.out.print("IP NO VALIDA: "+ this.IPservidor.getText()); 
-            JOptionPane.showMessageDialog(null, "IP NO VALIDA");
-            }
-        else{
-        BigInteger publicKey1 = new BigInteger(this.keyPublic.getText());
-        BigInteger privateKey1 = new BigInteger(this.key.getText());
-        rsa =new RSA(publicKey1, privateKey1, 10);
-        
-        
-        System.out.println("\n" + "IP Valida: " + this.IPservidor.getText());
-        System.out.println("\n" + "P: " + rsa.getP());
-        System.out.println("Q: " + rsa.getQ());
-        System.out.println("n (p*q): " + rsa.getN());
-        System.out.println("φ de Euler para N: " + rsa.getTotient());
-        System.out.println("e: " + rsa.getE());
-        System.out.println("d: " + rsa.getD());
-        
-        System.out.println("\n" + "Funcion de cifrado: " + rsa.getE()+", "+rsa.getN());
-        System.out.println("Funcion de desifrado: " + rsa.getD()+", "+rsa.getN());
-        }
-    }//GEN-LAST:event_okActionPerformed
+    }//GEN-LAST:event_qtxtActionPerformed
 
           
     
@@ -294,8 +271,7 @@ public class VentanaChat extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField key;
-    private javax.swing.JTextField keyPublic;
-    private javax.swing.JButton ok;
+    private javax.swing.JTextField ptxt;
+    private javax.swing.JTextField qtxt;
     // End of variables declaration//GEN-END:variables
 }

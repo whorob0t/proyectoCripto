@@ -1,5 +1,7 @@
 package proyectocripto;
 
+import java.math.BigInteger;
+
 /**
  *
  * @author xrworm
@@ -14,8 +16,8 @@ public class Chat {
         vc.show();
     }
     
-    public static void initCliente(String ip,String pl, String pr, String m){   //ejecuta la cconfiguracion que se usara para conectarse al servidor
-        cliente = new ConfChat(ip, pl, pr, m); //
+    public static void initCliente(String ip,BigInteger p, BigInteger q){   //ejecuta la cconfiguracion que se usara para conectarse al servidor
+        cliente = new ConfChat(ip, p, q); //
         cliente.start();
     }
 }
