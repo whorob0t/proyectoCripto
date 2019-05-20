@@ -69,8 +69,9 @@ public class RSA {
     public String desencripta(BigInteger[] encriptado) {
         BigInteger[] desencriptado = new BigInteger[encriptado.length];
 
-        for(int i=0; i<desencriptado.length; i++)
+        for(int i=0; i<desencriptado.length; i++){
             desencriptado[i] = encriptado[i].modPow(d,n);
+        }
 
         char[] charArray = new char[desencriptado.length];
         for(int i=0; i<charArray.length; i++)
@@ -79,6 +80,38 @@ public class RSA {
     }
 
     
+    
+    public String encriptaPUB(String mensaje, String eP, String nP)
+    {
+        BigInteger ePub = new BigInteger(eP);
+        BigInteger nPub = new BigInteger(nP);
+        int i;
+        String texto = new String();  
+        byte[] temp = new byte[1];
+        byte[] digitos = mensaje.getBytes();
+        BigInteger[] bigdigitos = new BigInteger[digitos.length];
+        for(i=0; i<bigdigitos.length;i++){
+            temp[0] = digitos[i];
+            bigdigitos[i] = new BigInteger(temp);
+        }
+        // Aplicando RSA
+        BigInteger[] encriptado = new BigInteger[bigdigitos.length];
+        for(i=0; i<bigdigitos.length; i++){
+            //System.out.println("Texto normal: " + i + "  " + bigdigitos[i]);
+            encriptado[i] = bigdigitos[i].modPow(ePub,nPub);          
+        }             
+        
+        //BASE 64                 
+            //System.out.println("Base  64");
+        for(i=0; i<encriptado.length; i++) {
+            texto += encriptado[i].toString() +"\t";
+            //System.out.println((i+1) + "  " + encriptado.length + "  " + texto );
+        }   
+        
+        byte[] bytes64 = texto.getBytes();
+        String txt64 = Base64.getEncoder().encodeToString(bytes64);  
+        return(txt64);
+    }
     
     
     public BigInteger getP() {return(p);}

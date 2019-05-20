@@ -52,9 +52,11 @@ public class RSA {
             //System.out.println(i + "    " +bigdigitos[i].modPow(e,n));           
         }             
         
+        
+        
         //BASE 64
         for(i=0; i<encriptado.length; i++) {
-            texto += encriptado[i] +"\t";
+            texto += encriptado[i].toString() +"\t";
             //System.out.println(i + "  " + encriptado.length + "  " + texto );
         }   
         
@@ -96,21 +98,23 @@ public class RSA {
         // Aplicando RSA
         BigInteger[] encriptado = new BigInteger[bigdigitos.length];
         for(i=0; i<bigdigitos.length; i++){
-            //System.out.println(bigdigitos[i]);
+            //System.out.println("Texto normal: " + i + "  " + bigdigitos[i]);
             encriptado[i] = bigdigitos[i].modPow(ePub,nPub);
-            //System.out.println(i + "    " +bigdigitos[i].modPow(e,n));           
+            //System.out.println("Texto Cifrado: " + i + "  " + encriptado[i]);           
         }             
         
-        //BASE 64
+        //BASE 64                 
+            //System.out.println("Base  64");
         for(i=0; i<encriptado.length; i++) {
             texto += encriptado[i] +"\t";
-            //System.out.println(i + "  " + encriptado.length + "  " + texto );
+            //System.out.println((i+1) + "  " + encriptado.length + "  " + texto );
         }   
+        //System.out.println("texto final:   " + texto);
+        //int pklen = texto.length();        
+        //String substring = texto.substring(4, pklen);  
+        //System.out.println(substring);
         
-        int pklen = texto.length();        
-        String substring = texto.substring(5, pklen);  
-        
-        byte[] bytes64 = substring.getBytes();
+        byte[] bytes64 = texto.getBytes();
         String txt64 = Base64.getEncoder().encodeToString(bytes64);  
         return(txt64);
     }
