@@ -13,8 +13,8 @@ public class Chat {
         vc.show();
     }
     
-    public static void initServer(){    //Se prepara un objeto para la configuracion del servidor
-        servidor = new ConfChat("hilos");
+    public static void initServer(String nick){    //Se prepara un objeto para la configuracion del servidor
+        servidor = new ConfChat("hilos", nick);
         servidor.start();
     }
     

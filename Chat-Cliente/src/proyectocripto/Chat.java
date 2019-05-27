@@ -16,8 +16,8 @@ public class Chat {
         vc.show();
     }
     
-    public static void initCliente(String ip,BigInteger p, BigInteger q){   //ejecuta la cconfiguracion que se usara para conectarse al servidor
-        cliente = new ConfChat(ip, p, q); //
+    public static void initCliente(String nickname, String ip,BigInteger p, BigInteger q){   //ejecuta la cconfiguracion que se usara para conectarse al servidor
+        cliente = new ConfChat(nickname, ip, p, q); //
         cliente.start();
     }
 }

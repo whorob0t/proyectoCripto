@@ -24,15 +24,18 @@ public class ConfChat extends Thread {
     private String eServer;
     private String nServer;
     private boolean checkKey = false;
-    
+    private boolean nickcheck = false;
+    private String nickname;
+    private String nicknameCliente;
 
-    public ConfChat(String ip,BigInteger pp, BigInteger qq){
+    public ConfChat(String nick, String ip,BigInteger pp, BigInteger qq){
         try{
             rsa = new RSA(pp, qq); //Metodo global en la aplicacion RSA para obtener llave publica y llave privada
             //EL socket permite la comunicacion entre los programas
             this.s = new Socket(ip,this.puerto); //Se asigna la ip"dada por el usuario" y el puerto "Default" al socket             
             this.entradaSocket = new InputStreamReader(s.getInputStream());
             this.entrada = new BufferedReader(entradaSocket);
+            nickname = nick;
             String eOwnPub = rsa.getE().toString(); //Obtenemos e del algoritmo RSA declarado anteriormente
             String nOwnPub = rsa.getN().toString(); //Obtenemos n del algoritmo RSA declarado anteriormente
             //  La llave publica consta de e y n 
@@ -41,13 +44,15 @@ public class ConfChat extends Thread {
             System.out.println("Llave PRIVADA del Cliente: " + rsa.getD());
             enviarLlave(llavePub); // enviamos la llave publica al servidor
             
+            enviarNickname(nickname); 
             System.out.println("p = " + rsa.getP());
             System.out.println("q = " + rsa.getQ());
             System.out.println("n = " + rsa.getN());
             System.out.println("fi = " + rsa.getFi());
             System.out.println("e = " + rsa.getE());
             System.out.println("d = " + rsa.getD());
-            System.out.println();       
+            System.out.println();   
+            System.out.println("Nickname: " + nickname + "\n");     
         }catch (Exception e){};
     }
 
@@ -55,11 +60,23 @@ public class ConfChat extends Thread {
         String texto;
         while(true){
             try{
-                texto = entrada.readLine();//Resive el mensaje cifrado enviado desde el servidor  
-                                
+                texto = entrada.readLine();//Resive el mensaje cifrado enviado desde el servidor                                 
                 String textEncrypt=(texto.trim());   //Quita los espacion que pueda haber en el texto   
-                String newStr = texto.substring(2, textEncrypt.length()+1); //Quita el primer elemento que se agrega
-                             
+                
+                try{
+                    String n = textEncrypt.substring(0, 9);
+                    String nickCli = textEncrypt.substring(9, textEncrypt.length());       
+                    
+                    if(n.equals("Nickname:")){
+                        System.out.println("Nickname del cliente: " + nickCli + "\n");
+                        nicknameCliente = nickCli;
+                        nickcheck = true;
+                    }
+                }catch(Exception ex){
+                    System.out.println("");
+                }
+                
+                
                 if(checkKey == false){
                     String pubkey = textEncrypt;             
                     try{
@@ -79,13 +96,17 @@ public class ConfChat extends Thread {
                             
                             checkKey = true;
                             System.out.println("Status Keys: " + checkKey);
-                            jTextArea1.append("\n" + "Llaves compartidas. \nEnvia mensajes ahora.");
+                            jTextArea1.append("\n" + "Llaves compartidas. \nEnvia mensajes ahora.\n\n");
                         }
                     }catch(Exception ex){
                         System.out.println("Error al obtener la llave");
                     }
-                }else{
-                    System.out.println("\n\nMensaje BASE 64 Encriptado:  " + newStr);
+                }
+                
+                if(nickcheck == true && checkKey == true){
+                    String newStr = texto.substring(2, textEncrypt.length()); //Quita el primer elemento que se agrega
+                    
+                    System.out.println(newStr); 
                     if(texto != "" || texto != null){                  
                         String mensajeDecrypt = null;   
 
@@ -108,7 +129,8 @@ public class ConfChat extends Thread {
 
                                    try{
                                        System.out.println("Mensaje Desencriptado: " + mensajeDecrypt);
-                                       VentanaChat.jTextArea1.append("\n"+"Servidor: "+ mensajeDecrypt); //Imprime el mensaje desencriptado en la pantalla
+                                       //VentanaChat.jTextArea1.append("\n"+nicknameCliente+": "+ mensajeDecrypt); //Imprime el mensaje desencriptado en la pantalla
+                                       VentanaChat.jTextArea1.append(String.format("\n%-30s %90s\n", "", nicknameCliente+": " + mensajeDecrypt));
                                     }
                                     catch(Exception ex){System.out.println("Error sl mostrar mensaje");}
                                 }catch(Exception ex){System.out.println("Error al desencriptar");}                            
@@ -143,6 +165,16 @@ public class ConfChat extends Thread {
         }
         catch (IOException e){
             System.out.println("Problema al enviar llave publica :c");
+        };
+    }
+    
+    public void enviarNickname(String nick){        
+        try{
+            this.salida = new DataOutputStream(s.getOutputStream());//Crera flujo de salid            
+            this.salida.writeUTF("Nickname:"+nick+"\n");//Enviamos mensaje
+        }
+        catch (IOException e){
+            System.out.println("Problema al enviar nickname :c");
         };
     }
     

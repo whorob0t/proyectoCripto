@@ -19,9 +19,13 @@ public class ConfChat extends Thread {
     private String eCliente;
     private String nCliente;
     private boolean checkKey = false;
+    private boolean nickcheck = false;
+    private String nickname;
+    private String nicknameCliente;
     
-    public ConfChat(String nombre){
+    public ConfChat(String nombre, String nick){
         super(nombre);
+        nickname = nick;
     }
     
     public void enviarMSG(String msg){
@@ -31,7 +35,7 @@ public class ConfChat extends Thread {
             System.out.println("\n"+"Enviando mensaje al cliente:  " + msg);
             String encryptedMessage = rsa.encriptaPUB(msg,eCliente,nCliente);//Encriptar el mensaje
             //BigInteger encryptedMessage = rsa.encripta( msg );       //Mensaje encriptado
-            System.out.println( encryptedMessage ); // Muestra el mensaje encriptado
+            //System.out.println( encryptedMessage ); // Muestra el mensaje encriptado
             this.salida.writeUTF(encryptedMessage + "\n");
         }catch (IOException e){};
     }
@@ -40,7 +44,16 @@ public class ConfChat extends Thread {
             //Se creal las llaves para ser enviados 
             try{                
                 System.out.println("Generando Llave Publica y Llave Privada...");
-                rsa = new RSA(p, q);                
+                rsa = new RSA(p, q);    
+                System.out.println(); 
+                System.out.println("p = " + rsa.getP());
+                System.out.println("q = " + rsa.getQ());
+                System.out.println("n = " + rsa.getN());
+                System.out.println("fi = " + rsa.getFi());
+                System.out.println("e = " + rsa.getE());
+                System.out.println("d = " + rsa.getD());
+                System.out.println();  
+                System.out.println("Nickname: " + nickname + "\n"); 
             }catch(Exception ex){
                 System.out.println("Error en el generamiento de llaves");
             }
@@ -61,7 +74,24 @@ public class ConfChat extends Thread {
                 //Mensaje recibido
                 texto = this.entrada.readLine();
                 String textEncrypt=(texto.trim());    
-                String newStr = texto.substring(2, textEncrypt.length()+1);  
+                            
+                System.out.println(textEncrypt); 
+                try{
+                    if(nickcheck == false){
+                        String n = textEncrypt.substring(0, 9);
+                        String nickCli = textEncrypt.substring(9, textEncrypt.length());
+
+                        if(n.equals("Nickname:")){
+                            System.out.println("Nickname del cliente: " + nickCli);
+                            nicknameCliente = nickCli;
+                            nickcheck = true;
+                        }
+                    }
+                }catch(Exception ex){
+                    System.out.println("");
+                }
+                
+               
                 if(checkKey == false){
                     String pubkey = textEncrypt;             
                     try{
@@ -81,19 +111,23 @@ public class ConfChat extends Thread {
                             String eOwnPub = rsa.getE().toString(); 
                             String nOwnPub = rsa.getN().toString(); 
                             String llavePub = "PK" + eOwnPub.length() + ""  + nOwnPub.length() + ""  + eOwnPub + "" + nOwnPub;
-                            enviarLlave(llavePub); 
+                            enviarLlave(llavePub);
+                            
+                            enviarNickname(nickname); 
                             System.out.println("Llave pública del Cliente: " + pubkey);
                             System.out.println("Status Key: " + checkKey );
                             
-                            jTextArea1.append("\n"+"Llaves Compartidas.  \nEnvia mesajes ahora");
+                            jTextArea1.append("\n"+"Llaves Compartidas.  \nEnvia mesajes ahora\n\n");
                         }else{
                             //break;
                         }
                     }catch(Exception ex){
                         System.out.println("Error al obtener la llave");
                     }
-                }else{
-
+                }
+                
+                if(checkKey == true && nickcheck == true){
+                    String newStr = texto.substring(2, textEncrypt.length());  
                     System.out.println("\n" + "Mensaje recibido desde el cliente: " + newStr);
 
                     if(newStr != "" || newStr != null){
@@ -118,8 +152,9 @@ public class ConfChat extends Thread {
 
                                    try{
                                        System.out.println("Mensaje Desencriptado: " + mensajeDecrypt);
-                                       VentanaChat.jTextArea1.append("\n"+"Cliente: "+ mensajeDecrypt); //Imprime el mensaje desencriptado en la pantalla
-                                    }
+                                       //VentanaChat.jTextArea1.append("\n" + nicknameCliente +": "+ mensajeDecrypt); //Imprime el mensaje desencriptado en la pantalla
+                                       VentanaChat.jTextArea1.append(String.format("\n%-30s %47s\n", "", nicknameCliente+": " + mensajeDecrypt));
+                                   }
                                     catch(Exception ex){System.out.println("Error sl mostrar mensaje");}
                                 }catch(Exception ex){System.out.println("Error al desencriptar");}                            
                             }catch(Exception ex){System.out.println("Error al obtener String de mensje");}
@@ -127,8 +162,8 @@ public class ConfChat extends Thread {
                     }
                 }
             }
-        }catch (IOException e){
-            System.out.println("Algun tipo de error");
+        }catch (IOException ex){
+            System.out.println("Algun tipo de error");            
         }
     }
     
@@ -139,7 +174,7 @@ public class ConfChat extends Thread {
         return null;
     }
     
-     public void enviarLlave(String llavePublica){
+    public void enviarLlave(String llavePublica){
         
         System.out.println("Enviando llave publica al Cliente.");
         try{
@@ -149,6 +184,17 @@ public class ConfChat extends Thread {
         }
         catch (IOException e){
             System.out.println("Problema al enviar llave publica :c");
+        };
+    }
+    public void enviarNickname(String nick){
+        
+        System.out.println("Enviando llave publica al Cliente.");
+        try{
+            this.salida = new DataOutputStream(s.getOutputStream());//Crera flujo de salid            
+            this.salida.writeUTF("Nickname:"+nick+"\n");//Enviamos mensaje
+        }
+        catch (IOException e){
+            System.out.println("Problema al enviar nickname :c");
         };
     }
     
