@@ -98,7 +98,7 @@ public class ConfChat extends Thread {
                         char char1 = pubkey.charAt(0);
                         char char2 = pubkey.charAt(1);
 
-                        if(char1 == 'P' && char2 == 'K'){
+                        if(char1 == 'P' && char2 == 'K'){ // leemos si el mensaje recibido es la llave publica
                             int pubklen = pubkey.length();
                             char eln = pubkey.charAt(2);
                             char nln = pubkey.charAt(3);
@@ -109,7 +109,8 @@ public class ConfChat extends Thread {
                             checkKey = true;        
                             
                             String eOwnPub = rsa.getE().toString(); 
-                            String nOwnPub = rsa.getN().toString(); 
+                            String nOwnPub = rsa.getN().toString();
+                            // Compartimos nuestra llave publica 
                             String llavePub = "PK" + eOwnPub.length() + ""  + nOwnPub.length() + ""  + eOwnPub + "" + nOwnPub;
                             enviarLlave(llavePub);
                             

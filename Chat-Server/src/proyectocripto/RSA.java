@@ -33,50 +33,15 @@ public class RSA {
          
     }
     
-    public String encripta(String mensaje)
-    {
-        int i;
-        String texto = new String();  
-        byte[] temp = new byte[1];
-        byte[] digitos = mensaje.getBytes();
-        BigInteger[] bigdigitos = new BigInteger[digitos.length];
-        for(i=0; i<bigdigitos.length;i++){
-            temp[0] = digitos[i];
-            bigdigitos[i] = new BigInteger(temp);
-        }
-        // Aplicando RSA
-        BigInteger[] encriptado = new BigInteger[bigdigitos.length];
-        for(i=0; i<bigdigitos.length; i++){
-            //System.out.println(bigdigitos[i]);
-            encriptado[i] = bigdigitos[i].modPow(e,n);
-            //System.out.println(i + "    " +bigdigitos[i].modPow(e,n));           
-        }             
-        
-        
-        
-        //BASE 64
-        for(i=0; i<encriptado.length; i++) {
-            texto += encriptado[i].toString() +"\t";
-            //System.out.println(i + "  " + encriptado.length + "  " + texto );
-        }   
-        
-        int pklen = texto.length();        
-        String substring = texto.substring(5, pklen);  
-        
-        byte[] bytes64 = substring.getBytes();
-        String txt64 = Base64.getEncoder().encodeToString(bytes64);  
-        return(txt64);
-    }
-    
     public String desencripta(BigInteger[] encriptado) {
         BigInteger[] desencriptado = new BigInteger[encriptado.length];
 
         for(int i=0; i<desencriptado.length; i++)
-            desencriptado[i] = encriptado[i].modPow(d,n);
+            desencriptado[i] = encriptado[i].modPow(d,n); // Se Aplica RSA (modulo) a cada letra del mensaje
 
         char[] charArray = new char[desencriptado.length];
         for(int i=0; i<charArray.length; i++)
-            charArray[i] = (char) (desencriptado[i].intValue());
+            charArray[i] = (char) (desencriptado[i].intValue()); // COnvertimos BigInteger a String 
         return(new String(charArray));
     }
 
@@ -90,32 +55,25 @@ public class RSA {
         String texto = new String();  
         byte[] temp = new byte[1];
         byte[] digitos = mensaje.getBytes();
-        BigInteger[] bigdigitos = new BigInteger[digitos.length];
+        BigInteger[] bigdigitos = new BigInteger[digitos.length]; 
         for(i=0; i<bigdigitos.length;i++){
             temp[0] = digitos[i];
-            bigdigitos[i] = new BigInteger(temp);
+            bigdigitos[i] = new BigInteger(temp);  //Leemos cada letra del mensaje y convertimos a biginteger
         }
         // Aplicando RSA
         BigInteger[] encriptado = new BigInteger[bigdigitos.length];
         for(i=0; i<bigdigitos.length; i++){
-            //System.out.println("Texto normal: " + i + "  " + bigdigitos[i]);
-            encriptado[i] = bigdigitos[i].modPow(ePub,nPub);
-            //System.out.println("Texto Cifrado: " + i + "  " + encriptado[i]);           
+            encriptado[i] = bigdigitos[i].modPow(ePub,nPub);//Se aplica RSA (modulo de las llaves)  a cada letra del mensaje          
         }             
         
         //BASE 64                 
             //System.out.println("Base  64");
         for(i=0; i<encriptado.length; i++) {
             texto += encriptado[i] +"\t";
-            //System.out.println((i+1) + "  " + encriptado.length + "  " + texto );
         }   
-        //System.out.println("texto final:   " + texto);
-        //int pklen = texto.length();        
-        //String substring = texto.substring(4, pklen);  
-        //System.out.println(substring);
         
         byte[] bytes64 = texto.getBytes();
-        String txt64 = Base64.getEncoder().encodeToString(bytes64);  
+        String txt64 = Base64.getEncoder().encodeToString(bytes64);  // Convertimos el arreglo BigInteger a BAse 64 para poder transportar el mensaje 
         return(txt64);
     }
     
